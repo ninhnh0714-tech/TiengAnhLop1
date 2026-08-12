@@ -193,10 +193,33 @@ footer{text-align:center;color:#9a9bb4;font-size:11.5px;margin-top:26px;font-wei
         <button class="mini-btn" onclick="practiceOnly(7)">▶ Luyện riêng phần này</button>
       </div>
     </div>
+
+    <div class="exercise" data-ex="8">
+      <div class="ex-top">
+        <div class="ex-title"><span class="n">8.</span> Nhìn tranh, chọn đáp án đúng trong bảng từ rồi viết lại <span style="color:#8b8fa8;font-weight:600;">(Look, read and choose the correct answer. Write)</span></div>
+      </div>
+      <div class="ex-desc">Có 1 bảng gồm 4 câu cho mỗi 3 câu hỏi — bé chọn câu đúng trong bảng rồi tự gõ lại.</div>
+      <div class="ex-controls">
+        <label class="chk"><input type="checkbox" class="ex-toggle" checked> Đưa vào đề tổng hợp</label>
+        <select class="count"><option value="1">1 bộ (3 câu)</option><option value="2">2 bộ (6 câu)</option><option value="3">3 bộ (9 câu)</option></select>
+        <button class="mini-btn" onclick="practiceOnly(8)">▶ Luyện riêng phần này</button>
+      </div>
+    </div>
+
+    <div class="exercise" data-ex="9">
+      <div class="ex-top">
+        <div class="ex-title"><span class="n">9.</span> Sắp xếp từ thành câu đúng <span style="color:#8b8fa8;font-weight:600;">(Put the words in the correct order)</span></div>
+      </div>
+      <div class="ex-controls">
+        <label class="chk"><input type="checkbox" class="ex-toggle" checked> Đưa vào đề tổng hợp</label>
+        <select class="count"><option value="4">4 câu</option><option value="6">6 câu</option><option value="8">8 câu</option></select>
+        <button class="mini-btn" onclick="practiceOnly(9)">▶ Luyện riêng phần này</button>
+      </div>
+    </div>
   </div>
 
   <div class="footer-actions">
-    <button class="big-btn purple" id="mixBtn">🧩 Tạo đề tổng hợp (Mix cả 7 phần)</button>
+    <button class="big-btn purple" id="mixBtn">🧩 Tạo đề tổng hợp (Mix cả 9 phần)</button>
   </div>
 
   <div id="quizArea"></div>
@@ -242,13 +265,19 @@ const SG2_WORDS=[
 // Our World 1 — Unit 5 Cool Clothes / Unit 6 My Toys / Unit 4 My House / Unit 3 My Family
 const CLOTHES=[{en:"dress",emoji:"👗"},{en:"pants",emoji:"👖"},{en:"shirt",emoji:"👕"},{en:"T-shirt",emoji:"👕"},
   {en:"socks",emoji:"🧦"},{en:"shoes",emoji:"👟"},{en:"skirt",emoji:"🩱"},{en:"hat",emoji:"🎩"},
-  {en:"jacket",emoji:"🧥"},{en:"shorts",emoji:"🩳"},{en:"cap",emoji:"🧢"}];
-const NAMES=["Alex","Mia","Tom","Lily","Sam","Nina","Leo","Emma"];
+  {en:"jacket",emoji:"🧥"},{en:"shorts",emoji:"🩳"},{en:"cap",emoji:"🧢"},{en:"uniform",emoji:"🥼"}];
+const ABILITIES=[{en:"climb a tree",emoji:"🌳"},{en:"ride a bike",emoji:"🚲"},{en:"swim",emoji:"🏊"},
+  {en:"sing a song",emoji:"🎤"},{en:"play the drum",emoji:"🥁"},{en:"run fast",emoji:"🏃"}];
+const NAMES_M=["Alex","Tom","Sam","Leo"];
+const NAMES_F=["Mia","Lily","Nina","Emma"];
+const NAMES=[...NAMES_M,...NAMES_F];
 const TOYS=[{en:"train",emoji:"🚂"},{en:"drum",emoji:"🥁"},{en:"ball",emoji:"⚽"},{en:"bike",emoji:"🚲"},{en:"truck",emoji:"🚚"},
   {en:"game",emoji:"🎮"},{en:"kite",emoji:"🪁"},{en:"car",emoji:"🚗"},{en:"top",emoji:"🌀"},{en:"puppet",emoji:"🧦"}];
 const ROOMS=[{en:"bedroom",emoji:"🛏️"},{en:"kitchen",emoji:"🍳"},{en:"dining room",emoji:"🍽️"}];
 const FAMILY=[{en:"mother",emoji:"👩"},{en:"father",emoji:"👨"},{en:"sister",emoji:"👧"},{en:"brother",emoji:"👦"},
   {en:"grandmother",emoji:"👵"},{en:"grandfather",emoji:"👴"}];
+const FAMILY_FEMALE=new Set(["mother","sister","grandmother"]);
+function pronounFor(familyEn){return FAMILY_FEMALE.has(familyEn)?"She":"He";}
 const ACTIONS=[{en:"sleeping",emoji:"😴"},{en:"cleaning",emoji:"🧹"},{en:"cooking",emoji:"🍳"},{en:"eating",emoji:"🍽️"},{en:"watching TV",emoji:"📺"}];
 const COLORS=["red","blue","green","yellow","pink","purple","brown","orange"];
 const VOCAB_POOL=[...SG1_WORDS,...CLOTHES,...TOYS,...ROOMS.map(r=>({en:r.en,emoji:r.emoji})),...FAMILY];
@@ -426,8 +455,72 @@ function genPart7(count){
   }
   return out;
 }
-/* Grading helper: case-insensitive, whitespace-insensitive compare (used for Part 7) */
+/* Grading helper: case-insensitive, whitespace-insensitive compare (used for Part 7,8,9) */
 function normalizeText(s){return String(s||"").trim().toLowerCase().replace(/\s+/g," ");}
+
+/* ================= PART 8: look+read, choose from word bank, write (mirrors "VI" exercise) ================= */
+function genPart8Set(){
+  const item=rand(singularOnly(VOCAB_POOL));
+  const q1Answer=`That's ${withArt(item.en)}${item.en}.`;
+  const distractorName=rand(NAMES);
+  const distractorItem=rand(singularOnly(VOCAB_POOL).filter(t=>t.en!==item.en));
+  const distractor=`That's ${distractorName}'s ${distractorItem.en}.`;
+
+  const personIsGirl=Math.random()<0.5;
+  const personName=personIsGirl?rand(NAMES_F):rand(NAMES_M);
+  const pronoun=personIsGirl?"She":"He";
+  const ability=rand(ABILITIES);
+  const q2Answer=`${pronoun} can ${ability.en}.`;
+
+  const action=rand(ACTIONS);
+  const q3Answer=`I am ${action.en}.`;
+
+  const bank=shuffle([q1Answer,q2Answer,q3Answer,distractor]);
+  return {bank, questions:[
+    {prompt:"What's that?",emoji:item.emoji,answer:q1Answer},
+    {prompt:`What can ${personName} do?`,emoji:ability.emoji,answer:q2Answer},
+    {prompt:"What are you doing?",emoji:action.emoji,answer:q3Answer},
+  ]};
+}
+function genPart8(numSets){
+  const out=[];
+  for(let s=0;s<numSets;s++){
+    const {bank,questions}=genPart8Set();
+    questions.forEach((q,i)=>{
+      out.push({sec:8,setId:s,bank:i===0?bank:null,text:q.prompt,scene:q.emoji,answer:q.answer});
+    });
+  }
+  return out;
+}
+
+/* ================= PART 9: put the words in the correct order ================= */
+function tokenizeSentence(sentence){
+  const trimmed=sentence.trim();
+  const core=trimmed.endsWith(".")?trimmed.slice(0,-1):trimmed;
+  return core.split(/\s+/);
+}
+function genScrambleSentence(){
+  const templates=[
+    ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const room=rand(["kitchen","bedroom","living room","dining room"]);
+      return `My ${fam.en} is ${act.en} in the ${room}.`;},
+    ()=>{const name=rand(NAMES);const fam=rand(FAMILY);const color=rand(COLORS);const item=rand(CLOTHES);const place=rand(["school","work"]);
+      return `${name}'s ${fam.en} wears ${withArtColor(color,item.en)}${color} ${item.en} to ${place} every day.`;},
+    ()=>{const color=rand(COLORS);const toy=rand(TOYS);
+      return `I want ${withArtColor(color,toy.en)}${color} ${toy.en} for my birthday.`;},
+    ()=>{const who=rand(["He","She"]);const ability=rand(ABILITIES);
+      return `${who} can ${ability.en}.`;},
+  ];
+  return rand(templates)();
+}
+function genPart9(count){
+  const out=[];
+  for(let i=0;i<count;i++){
+    const sentence=genScrambleSentence();
+    const words=shuffle(tokenizeSentence(sentence));
+    out.push({sec:9,scrambleDisplay:words.join(" / ")+" / .",answer:sentence});
+  }
+  return out;
+}
 
 /* ================= UI STATE ================= */
 let quiz=[];
@@ -437,7 +530,7 @@ function getConfig(exNum){
 }
 function generateAll(onlyList){
   quiz=[];
-  const cfg={};[1,2,3,4,5,6,7].forEach(n=>cfg[n]=getConfig(n));
+  const cfg={};[1,2,3,4,5,6,7,8,9].forEach(n=>cfg[n]=getConfig(n));
   const include=n=> onlyList? onlyList.includes(n) : cfg[n].on;
   if(include(1)) quiz.push(...genPart1(cfg[1].count));
   if(include(2)) quiz.push(...genPart2(cfg[2].count));
@@ -446,6 +539,8 @@ function generateAll(onlyList){
   if(include(5)) quiz.push(...genPart5(cfg[5].count));
   if(include(6)) quiz.push(...genPart6(cfg[6].count));
   if(include(7)) quiz.push(...genPart7(cfg[7].count));
+  if(include(8)) quiz.push(...genPart8(cfg[8].count));
+  if(include(9)) quiz.push(...genPart9(cfg[9].count));
   quiz=quiz.map((q,i)=>({...q,id:i,picked:null}));
   renderQuiz();
 }
@@ -458,27 +553,36 @@ const SEC_META={
  4:{icon:"✏️",color:"var(--sun)",label:"Phần II.4 · Ngữ pháp"},
  5:{icon:"🖼️",color:"var(--sky)",label:"Phần III.5 · Đọc hiểu tranh Yes/No"},
  6:{icon:"📖",color:"var(--sky)",label:"Phần III.6 · Đọc đoạn văn Yes/No"},
- 7:{icon:"🖊️",color:"var(--leaf)",label:"Phần IV.7 · Viết"},
+ 7:{icon:"🖊️",color:"var(--leaf)",label:"Phần IV.7 · Viết câu trả lời"},
+ 8:{icon:"🗂️",color:"var(--leaf)",label:"Phần IV.8 · Chọn đáp án trong bảng từ rồi viết lại"},
+ 9:{icon:"🔀",color:"var(--purple)",label:"Phần IV.9 · Sắp xếp từ thành câu"},
 };
 function renderQuiz(){
   const area=document.getElementById('quizArea');
   const groups={};
   quiz.forEach(q=>{(groups[q.sec]=groups[q.sec]||[]).push(q);});
   let html="";
-  [1,2,3,4,5,6,7].forEach(sec=>{
+  [1,2,3,4,5,6,7,8,9].forEach(sec=>{
     if(!groups[sec])return;
     const m=SEC_META[sec];
     html+=`<div class="station"><div class="station-head"><div class="station-dot" style="background:${m.color}">${m.icon}</div><h2>${m.label}</h2></div>`;
-    let lastPassageGroup=null;
     groups[sec].forEach(q=>{
       if(sec===6 && q.passageText){
         html+=`<div class="passage">${q.passageText}</div>`;
       }
-      html+=`<div class="qcard" data-qid="${q.id}">
-        <div class="qtext">${q.speakText?`<button class="speak" onclick="speak('${esc(q.speakText)}')">🔊</button>`:""} ${q.text}</div>
+      if(sec===8 && q.bank){
+        html+=`<div class="passage"><b>Bảng từ:</b><br>${q.bank.map(b=>`• ${b}`).join("<br>")}</div>`;
+      }
+      html+=`<div class="qcard" data-qid="${q.id}">`;
+      if(sec===9){
+        html+=`<div class="qtext">Sắp xếp các từ sau thành câu đúng:</div>
+        <div class="passage" style="font-weight:800;letter-spacing:.5px;">${q.scrambleDisplay}</div>`;
+      } else {
+        html+=`<div class="qtext">${q.speakText?`<button class="speak" onclick="speak('${esc(q.speakText)}')">🔊</button>`:""} ${q.text}</div>
         ${q.scene?`<div class="scene">${q.scene}</div>`:""}
         ${q.note?`<div style="font-size:11.5px;color:#9a9bb4;margin-bottom:6px;">${q.note}</div>`:""}`;
-      if(sec===7){
+      }
+      if(sec===7||sec===8||sec===9){
         html+=`<input type="text" class="write-input" placeholder="Viết câu trả lời của con vào đây..." style="width:100%;padding:9px 12px;border-radius:12px;border:2px solid #ECEAF7;font-family:inherit;font-weight:600;font-size:14px;" oninput="onWriteInput(${q.id},this)">
         <div class="write-feedback" style="font-size:12.5px;font-weight:700;margin-top:6px;"></div>`;
       } else {
@@ -512,7 +616,7 @@ async function submitQuiz(){
     total++;
     const card=document.querySelector(`.qcard[data-qid="${q.id}"]`);
     if(!card)return;
-    if(q.sec===7){
+    if(q.sec===7||q.sec===8||q.sec===9){
       const input=card.querySelector('.write-input');
       const feedback=card.querySelector('.write-feedback');
       const isCorrect = normalizeText(input?input.value:"") === normalizeText(q.answer);
