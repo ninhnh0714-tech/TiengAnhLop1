@@ -649,7 +649,10 @@ async function submitQuiz(){
     <div>🎉 Xong rồi, ${document.getElementById('studentName').value||'bạn nhỏ'}!</div>
     <div class="score">${correct}/${total} (${pct}%)</div>
     <div class="stars">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
-    <div style="margin-top:12px;"><button class="big-btn ghost" onclick="location.reload()">🔄 Làm đề mới</button></div>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="big-btn purple" onclick="generateAll(null)">🧩 Tạo đề tổng hợp mới ngay</button>
+      <button class="big-btn ghost" onclick="scrollToSetup()">⚙️ Chọn lại từng phần</button>
+    </div>
   </div>`;
   res.scrollIntoView({behavior:"smooth"});
 }
@@ -662,6 +665,9 @@ async function refreshBadges(){
   const stars=hist.reduce((s,h)=>s+(h.pct>=90?3:h.pct>=70?2:h.pct>=50?1:0),0);
   document.getElementById('badgeAttempts').textContent=`📘 Đã làm: ${hist.length} bài`;
   document.getElementById('badgeStars').textContent=`⭐ Tổng sao: ${stars}`;
+}
+function scrollToSetup(){
+  document.querySelector('.section-block').scrollIntoView({behavior:"smooth"});
 }
 document.getElementById('mixBtn').addEventListener('click',()=>generateAll(null));
 refreshBadges();
