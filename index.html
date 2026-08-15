@@ -41,6 +41,58 @@ select.count{border:2px solid #ECEAF7;border-radius:10px;padding:5px 8px;font-we
 .mini-btn{background:#F2F0FA;border:none;padding:8px 14px;border-radius:10px;font-weight:800;font-size:12.5px;cursor:pointer;color:var(--ink);}
 .mini-btn:hover{background:#E8E4FA;}
 
+/* ==== Chip chọn mức độ: sáng rõ, mỗi mức một màu ==== */
+#levelChips .unit-chip{
+  position:relative;padding:11px 20px;font-size:14.5px;border-width:2.5px;
+  transition:transform .15s, box-shadow .25s, background .2s;
+}
+#levelChips .unit-chip:hover{transform:translateY(-2px);}
+#levelChips .unit-chip.on{
+  color:#fff;transform:translateY(-2px) scale(1.06);font-weight:800;
+  padding-right:34px;
+}
+#levelChips .unit-chip.on::after{
+  content:"✓";position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:14px;font-weight:900;
+}
+#levelChips .unit-chip[data-lv="medium"].on{
+  background:var(--leaf);border-color:var(--leaf);
+  box-shadow:0 0 0 5px rgba(95,191,110,.28),0 8px 20px -8px rgba(95,191,110,.9);
+  animation:levelGlowGreen 1.8s ease-in-out infinite;
+}
+#levelChips .unit-chip[data-lv="hard"].on{
+  background:#F5A623;border-color:#F5A623;
+  box-shadow:0 0 0 5px rgba(245,166,35,.28),0 8px 20px -8px rgba(245,166,35,.9);
+  animation:levelGlowOrange 1.8s ease-in-out infinite;
+}
+#levelChips .unit-chip[data-lv="veryhard"].on{
+  background:var(--coral);border-color:var(--coral);
+  box-shadow:0 0 0 5px rgba(255,107,87,.3),0 8px 20px -8px rgba(255,107,87,.9);
+  animation:levelGlowRed 1.4s ease-in-out infinite;
+}
+@keyframes levelGlowGreen{
+  0%,100%{box-shadow:0 0 0 4px rgba(95,191,110,.22),0 8px 18px -8px rgba(95,191,110,.8);}
+  50%{box-shadow:0 0 0 9px rgba(95,191,110,.10),0 10px 24px -8px rgba(95,191,110,.95);}
+}
+@keyframes levelGlowOrange{
+  0%,100%{box-shadow:0 0 0 4px rgba(245,166,35,.22),0 8px 18px -8px rgba(245,166,35,.8);}
+  50%{box-shadow:0 0 0 9px rgba(245,166,35,.10),0 10px 24px -8px rgba(245,166,35,.95);}
+}
+@keyframes levelGlowRed{
+  0%,100%{box-shadow:0 0 0 4px rgba(255,107,87,.24),0 8px 18px -8px rgba(255,107,87,.85);}
+  50%{box-shadow:0 0 0 10px rgba(255,107,87,.12),0 10px 26px -8px rgba(255,107,87,1);}
+}
+/* bảng mô tả mức độ đổi màu theo mức đang chọn */
+#levelDesc{border-left:5px solid #ddd;padding:10px 12px;border-radius:0 10px 10px 0;background:#FAFAFD;transition:.25s;}
+#levelDesc.lv-medium{border-left-color:var(--leaf);background:#F0FBF3;}
+#levelDesc.lv-hard{border-left-color:#F5A623;background:#FFF7E9;}
+#levelDesc.lv-veryhard{border-left-color:var(--coral);background:#FFF0ED;}
+/* huy hiệu mức độ hiển thị trên đầu trang */
+#levelBadge{font-weight:800;}
+@media(prefers-reduced-motion:reduce){
+  #levelChips .unit-chip.on{animation:none;}
+}
+
 .footer-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
 .big-btn{display:inline-flex;align-items:center;gap:8px;background:var(--leaf);color:#fff;border:none;padding:14px 24px;border-radius:16px;font-family:'Baloo 2';font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 10px 20px -10px rgba(95,191,110,.7);}
 .big-btn.alt{background:var(--coral);box-shadow:0 10px 20px -10px rgba(255,107,87,.7);}
@@ -121,6 +173,7 @@ footer{text-align:center;color:#9a9bb4;font-size:11.5px;margin-top:26px;font-wei
     <div class="badge-row">
       <span class="badge" id="badgeAttempts">📘 Đã làm: 0 bài</span>
       <span class="badge" id="badgeStars">⭐ Tổng sao: 0</span>
+      <span class="badge" id="levelBadge">🙂 Mức: Trung bình</span>
     </div>
   </div>
 
@@ -371,8 +424,13 @@ function setLevel(lv,el){
   LEVEL=lv;
   document.querySelectorAll('#levelChips .unit-chip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('levelDesc').innerHTML=LEVEL_INFO[lv];
+  const desc=document.getElementById('levelDesc');
+  desc.innerHTML=LEVEL_INFO[lv];
+  desc.className="lv-"+lv;
+  const badge=document.getElementById('levelBadge');
+  if(badge) badge.textContent=LEVEL_LABEL[lv];
 }
+const LEVEL_LABEL={medium:"🙂 Mức: Trung bình",hard:"😀 Mức: Khó",veryhard:"🔥 Mức: Rất khó"};
 function optCount(){ return LEVEL==="medium"?3:4; }
 function isHard(){ return LEVEL!=="medium"; }
 function isVeryHard(){ return LEVEL==="veryhard"; }
@@ -1092,6 +1150,8 @@ function printWorksheet(){
 }
 document.getElementById('printBtn').addEventListener('click',printWorksheet);
 document.getElementById('levelDesc').innerHTML=LEVEL_INFO[LEVEL];
+document.getElementById('levelDesc').className="lv-"+LEVEL;
+document.getElementById('levelBadge').textContent=LEVEL_LABEL[LEVEL];
 document.getElementById('mixBtn').addEventListener('click',()=>generateAll(null));
 refreshBadges();
 </script>
