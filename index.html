@@ -76,6 +76,41 @@ select.count{border:2px solid #ECEAF7;border-radius:10px;padding:5px 8px;font-we
 .stars{font-size:28px;letter-spacing:5px;}
 footer{text-align:center;color:#9a9bb4;font-size:11.5px;margin-top:26px;font-weight:700;}
 @media(max-width:520px){.qcard{padding:12px 10px;} .opt{padding:8px 10px;font-size:13px;} .ex-desc{margin-left:0;}}
+
+/* ============ PRINT / PDF WORKSHEET ============ */
+#printArea{display:none;}
+#printArea.show{display:block;background:#fff;color:#000;padding:26px 24px;border-radius:16px;margin-top:18px;box-shadow:0 12px 30px -18px rgba(38,50,77,.45);}
+.pw-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;background:#EAFAFB;border:2px dashed var(--sky);border-radius:14px;padding:12px;margin-bottom:18px;}
+.pw-toolbar .hint{font-size:12.5px;font-weight:700;color:#3a6a72;width:100%;text-align:center;}
+.pw-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #000;padding-bottom:8px;margin-bottom:14px;}
+.pw-header .left{font-size:13px;line-height:2.1;}
+.pw-header .right{text-align:center;font-weight:700;font-size:13px;line-height:1.7;}
+.pw-title{font-size:17px;font-weight:800;letter-spacing:.3px;}
+.pw-sec{font-weight:800;font-size:13.5px;margin:14px 0 4px;}
+.pw-instr{font-weight:700;font-size:12.5px;margin:8px 0 6px;}
+.pw-q{margin:0 0 9px;font-size:12.5px;page-break-inside:avoid;break-inside:avoid;}
+.pw-q .num{font-weight:700;display:inline-block;min-width:22px;}
+.pw-opts{margin:3px 0 0 22px;display:flex;gap:26px;flex-wrap:wrap;font-size:12.5px;}
+.pw-opts .o{display:flex;align-items:center;gap:5px;}
+.pw-emoji{font-size:22px;}
+.pw-line{border-bottom:1px dotted #333;display:inline-block;min-width:60%;height:15px;}
+.pw-answer-line{margin:4px 0 0 22px;font-size:12.5px;}
+.pw-bank{border:1.6px solid #000;padding:9px 12px;margin:6px 0 10px;display:flex;flex-wrap:wrap;gap:6px 34px;font-style:italic;font-size:12.5px;}
+.pw-passage{font-size:12.5px;line-height:1.75;text-align:justify;margin:6px 0 10px;}
+.pw-scene{font-size:24px;margin:2px 0 2px 22px;letter-spacing:3px;}
+.pw-scramble{margin:3px 0 2px 22px;font-weight:700;font-size:12.5px;}
+.pw-key{margin-top:10px;font-size:11.5px;line-height:1.85;}
+.pw-key h3{margin:0 0 6px;font-size:13.5px;}
+.pw-foot{text-align:center;font-weight:800;font-size:12.5px;margin-top:16px;}
+
+@media print{
+  @page{size:A4;margin:13mm 14mm;}
+  body{background:#fff !important;background-image:none !important;color:#000;}
+  .wrap{max-width:none;padding:0;}
+  .hero,.section-block,.footer-actions,#quizArea,#resultArea,footer,.field,.keyopt,.pw-toolbar{display:none !important;}
+  #printArea{display:block !important;padding:0 !important;margin:0 !important;box-shadow:none !important;border-radius:0 !important;}
+  .pw-pagebreak{page-break-before:always;break-before:page;}
+}
 </style>
 </head>
 <body>
@@ -92,6 +127,17 @@ footer{text-align:center;color:#9a9bb4;font-size:11.5px;margin-top:26px;font-wei
   <div class="field" style="margin-top:16px;">
     <label>Tên bé</label>
     <input id="studentName" placeholder="Nhập tên...">
+  </div>
+
+  <div class="section-block" style="margin-top:14px;">
+    <h2>🎚️ Mức độ khó</h2>
+    <div class="sub">Áp dụng cho tất cả các dạng bài — chọn trước khi tạo đề</div>
+    <div class="units" id="levelChips">
+      <div class="unit-chip on" data-lv="medium" onclick="setLevel('medium',this)">🙂 Trung bình</div>
+      <div class="unit-chip" data-lv="hard" onclick="setLevel('hard',this)">😀 Khó</div>
+      <div class="unit-chip" data-lv="veryhard" onclick="setLevel('veryhard',this)">🔥 Rất khó</div>
+    </div>
+    <div id="levelDesc" style="font-size:12.5px;font-weight:700;color:#6b7290;margin-top:10px;line-height:1.6;"></div>
   </div>
 
   <!-- ===== I. PHONICS ===== -->
@@ -220,10 +266,17 @@ footer{text-align:center;color:#9a9bb4;font-size:11.5px;margin-top:26px;font-wei
 
   <div class="footer-actions">
     <button class="big-btn purple" id="mixBtn">🧩 Tạo đề tổng hợp (Mix cả 9 phần)</button>
+    <button class="big-btn" id="printBtn" style="background:var(--sky);box-shadow:0 10px 20px -10px rgba(63,184,201,.7);">🖨️ Xuất đề PDF để in</button>
+  </div>
+  <div style="text-align:center;margin-top:8px;" class="keyopt">
+    <label class="chk" style="justify-content:center;display:inline-flex;">
+      <input type="checkbox" id="includeKey" checked> In kèm trang đáp án cho phụ huynh
+    </label>
   </div>
 
   <div id="quizArea"></div>
   <div id="resultArea"></div>
+  <div id="printArea"></div>
 
   <footer>Tự biên soạn dựa trên định dạng đề &amp; giáo trình Sounds Great 1, Sounds Great 2, Our World 1 — chỉ dùng để luyện tập tại nhà.</footer>
 </div>
@@ -280,13 +333,24 @@ const FAMILY_FEMALE=new Set(["mother","sister","grandmother"]);
 function pronounFor(familyEn){return FAMILY_FEMALE.has(familyEn)?"She":"He";}
 const ACTIONS=[{en:"sleeping",emoji:"😴"},{en:"cleaning",emoji:"🧹"},{en:"cooking",emoji:"🍳"},{en:"eating",emoji:"🍽️"},{en:"watching TV",emoji:"📺"}];
 const COLORS=["red","blue","green","yellow","pink","purple","brown","orange"];
-const VOCAB_POOL=[...SG1_WORDS,...CLOTHES,...TOYS,...ROOMS.map(r=>({en:r.en,emoji:r.emoji})),...FAMILY];
+// Gộp các nguồn từ vựng và loại bỏ từ trùng tên (vd. "hat", "kite" xuất hiện ở nhiều nhóm)
+const VOCAB_POOL=(function(){
+  const all=[...SG1_WORDS,...CLOTHES,...TOYS,...ROOMS.map(r=>({en:r.en,emoji:r.emoji})),...FAMILY];
+  const seen=new Set();
+  return all.filter(w=>{ const k=w.en.toLowerCase(); if(seen.has(k))return false; seen.add(k); return true; });
+})();
 
 /* ================= HELPERS ================= */
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function pick(arr,n){return shuffle(arr).slice(0,Math.min(n,arr.length));}
 function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function art(word){return /^[aeiou]/i.test(word)?"an":"a";}
+// "uniform", "umbrella"... : u đọc /juː/ thì dùng "a", không dùng "an"
+const A_NOT_AN=new Set(["uniform","unicorn","university","yo-yo"]);
+function art(word){
+  const w=String(word).toLowerCase();
+  if(A_NOT_AN.has(w)) return "a";
+  return /^[aeiou]/i.test(w)?"an":"a";
+}
 const NO_ARTICLE=new Set(["pants","shorts","socks","shoes"]);
 function withArt(word){return NO_ARTICLE.has(word)?"":art(word)+" ";}
 // when a color precedes the noun ("a blue dress"), the article must agree with the color, not the noun
@@ -296,6 +360,43 @@ function speak(text){try{const u=new SpeechSynthesisUtterance(text);u.lang="en-U
 function family(word){return word.slice(-2);}
 function esc(s){return String(s).replace(/'/g,"");}
 
+/* ================= DIFFICULTY LEVEL ================= */
+let LEVEL="medium";
+const LEVEL_INFO={
+  medium:"🙂 <b>Trung bình</b>: 3 lựa chọn mỗi câu; câu ngắn, đáp án nhiễu khác biệt rõ; đoạn đọc ~125 từ.",
+  hard:"😀 <b>Khó</b>: 4 lựa chọn; đáp án nhiễu dễ nhầm (cùng chữ cái đầu / cùng nguyên âm); thêm mẫu câu số nhiều, phủ định, câu hỏi Wh-; đoạn đọc dài hơn và có câu hỏi suy luận.",
+  veryhard:"🔥 <b>Rất khó</b>: 4 lựa chọn cực dễ nhầm; câu ghép có 2 mệnh đề, câu phủ định; phần Viết yêu cầu câu đầy đủ 2 ý; sắp xếp câu dài; đoạn đọc dài nhất, hỏi chéo thông tin."
+};
+function setLevel(lv,el){
+  LEVEL=lv;
+  document.querySelectorAll('#levelChips .unit-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('levelDesc').innerHTML=LEVEL_INFO[lv];
+}
+function optCount(){ return LEVEL==="medium"?3:4; }
+function isHard(){ return LEVEL!=="medium"; }
+function isVeryHard(){ return LEVEL==="veryhard"; }
+function vowelOf(w){ const m=String(w).match(/[aeiou]/i); return m?m[0].toLowerCase():""; }
+// Chọn đáp án nhiễu: mức cao hơn thì ưu tiên từ dễ nhầm, thiếu thì bù bằng từ ngẫu nhiên.
+// Luôn loại trùng tên để không có 2 lựa chọn giống hệt nhau.
+function pickDistractors(pool,n,confusableFilter,excludeName){
+  const used=new Set(excludeName?[String(excludeName).toLowerCase()]:[]);
+  const take=(list,k)=>{
+    const out=[];
+    for(const item of shuffle(list)){
+      const key=item.en.toLowerCase();
+      if(used.has(key))continue;
+      used.add(key); out.push(item);
+      if(out.length>=k)break;
+    }
+    return out;
+  };
+  let chosen=[];
+  if(isHard() && confusableFilter) chosen=take(pool.filter(confusableFilter),n);
+  if(chosen.length<n) chosen=chosen.concat(take(pool,n-chosen.length));
+  return chosen.slice(0,n);
+}
+
 /* ================= PART 1: phonics sound match ================= */
 function genPart1(count){
   const groups={};
@@ -303,7 +404,10 @@ function genPart1(count){
   const families=shuffle(Object.keys(groups)).slice(0,count);
   return families.map(f=>{
     const correct=rand(groups[f]);
-    const distractors=pick(SG2_WORDS.filter(w=>family(w.en)!==f),2);
+    const pool=SG2_WORDS.filter(w=>family(w.en)!==f);
+    // mức khó: lấy từ nhiễu cùng nguyên âm (vd. -ad vs -ag vs -am) để dễ nhầm hơn
+    const distractors=pickDistractors(pool,optCount()-1,
+      w=>vowelOf(family(w.en))===vowelOf(f), correct.en);
     const options=shuffle([correct,...distractors]);
     return {sec:1,text:`Tranh nào có từ chứa vần <b>${f}</b> (như trong "<i>${correct.en}</i>")?`,
       options:options.map(o=>({label:o.emoji,val:o.en,speak:o.en})),answer:correct.en,emojiOpts:true};
@@ -316,10 +420,14 @@ function genPart2(count){
   const usable=Object.keys(groups).filter(f=>groups[f].length>=2);
   const chosen=shuffle(usable).slice(0,count);
   return chosen.map(f=>{
-    const pair=pick(groups[f],2);
-    const odd=rand(SG2_WORDS.filter(w=>family(w.en)!==f));
+    // mức khó: hiện 3 từ cùng vần + 1 từ lạ (thay vì 2+1)
+    const sameCount=isHard()?Math.min(3,groups[f].length):2;
+    const pair=pick(groups[f],sameCount);
+    const pairNames=new Set(pair.map(x=>x.en.toLowerCase()));
+    const pool=SG2_WORDS.filter(w=>family(w.en)!==f && !pairNames.has(w.en.toLowerCase()));
+    const odd=pickDistractors(pool,1,w=>vowelOf(family(w.en))===vowelOf(f))[0];
     const options=shuffle([...pair,odd]);
-    return {sec:2,text:`Từ nào KHÔNG cùng vần với 2 từ còn lại?`,
+    return {sec:2,text:`Từ nào KHÔNG cùng vần với các từ còn lại?`,
       options:options.map(o=>({label:o.emoji,val:o.en,speak:o.en})),answer:odd.en,emojiOpts:true};
   });
 }
@@ -327,7 +435,9 @@ function genPart2(count){
 function genPart3(count){
   const items=pick(VOCAB_POOL,count);
   return items.map(w=>{
-    const distractors=pick(VOCAB_POOL.filter(x=>x.en!==w.en),2);
+    // mức khó: từ nhiễu cùng chữ cái đầu (cat/cup/cookie) -> phải đọc kỹ cả từ
+    const distractors=pickDistractors(VOCAB_POOL.filter(x=>x.en!==w.en),optCount()-1,
+      x=>x.en[0].toLowerCase()===w.en[0].toLowerCase(), w.en);
     const options=shuffle([w,...distractors]);
     return {sec:3,text:`Chọn tranh đúng với từ: <b>${w.en}</b>`,
       options:options.map(o=>({label:o.emoji,val:o.en,speak:o.en})),answer:w.en,emojiOpts:true,speakText:w.en};
@@ -335,32 +445,79 @@ function genPart3(count){
 }
 /* ================= PART 4: grammar MCQ ================= */
 const GRAMMAR_TEMPLATES=[
- ()=>{const it=rand(CLOTHES);const wrong=pick(CLOTHES.filter(c=>c.en!==it.en),2);const opts=shuffle([it,...wrong]);const who=rand(["she","he"]);
+ ()=>{const it=rand(CLOTHES);const wrong=pick(CLOTHES.filter(c=>c.en!==it.en),optCount()-1);const opts=shuffle([it,...wrong]);const who=rand(["she","he"]);
    return{text:`${it.emoji} What is ${who} wearing? – ${who==="she"?"She":"He"} is wearing ${withArt(it.en)}___.`,opts,answer:it.en};},
- ()=>{const it=rand(TOYS);const wrong=pick(TOYS.filter(c=>c.en!==it.en),2);const opts=shuffle([it,...wrong]);
+ ()=>{const it=rand(TOYS);const wrong=pick(TOYS.filter(c=>c.en!==it.en),optCount()-1);const opts=shuffle([it,...wrong]);
    return{text:`${it.emoji} Do you want ${withArt(it.en)}___? – Yes, I do.`,opts,answer:it.en};},
- ()=>{const it=rand(TOYS);const place=rand(["box","bag","room"]);const wrong=pick(TOYS.filter(c=>c.en!==it.en),2);const opts=shuffle([it,...wrong]);
+ ()=>{const it=rand(TOYS);const place=rand(["box","bag","room"]);const wrong=pick(TOYS.filter(c=>c.en!==it.en),optCount()-1);const opts=shuffle([it,...wrong]);
    return{text:`${it.emoji} Where is the ___? – It's in the ${place}.`,opts,answer:it.en};},
- ()=>{const it=rand(singularOnly(VOCAB_POOL));const opts=shuffle([{en:"This"},{en:"These"},{en:"Those"}]);
+ ()=>{const it=rand(singularOnly(VOCAB_POOL));const base=[{en:"This"},{en:"These"},{en:"Those"}];
+   const opts=shuffle(isHard()?[...base,{en:"They"}]:base);
    return{text:`${it.emoji} ___ is ${withArt(it.en)}${it.en}.`,opts,answer:"This"};},
- ()=>{const opts=shuffle([{en:"wants"},{en:"want"},{en:"is want"}]);const it=rand(singularOnly(CLOTHES.concat(TOYS)));
+ ()=>{const base=[{en:"wants"},{en:"want"},{en:"is want"}];const opts=shuffle(isHard()?[...base,{en:"wanting"}]:base);
+   const it=rand(singularOnly(CLOTHES.concat(TOYS)));
    return{text:`My father ___ ${withArt(it.en)}${it.en}. ${it.emoji}`,opts,answer:"wants"};},
- ()=>{const it=rand(CLOTHES);const wrong=pick(CLOTHES.filter(c=>c.en!==it.en),2);const opts=shuffle([it,...wrong]);const color=rand(COLORS);
+ ()=>{const it=rand(CLOTHES);const wrong=pick(CLOTHES.filter(c=>c.en!==it.en),optCount()-1);const opts=shuffle([it,...wrong]);const color=rand(COLORS);
    return{text:`${it.emoji} Those are my ${color} ___.`,opts,answer:it.en};},
- ()=>{const opts=shuffle([{en:"Does"},{en:"Do"},{en:"Is"}]);const it=rand(CLOTHES);
-   return{text:`${it.emoji} ___ he want a new ${it.en}? – No, he doesn't.`,opts,answer:"Does"};},
+ ()=>{const base=[{en:"Does"},{en:"Do"},{en:"Is"}];const opts=shuffle(isHard()?[...base,{en:"Are"}]:base);const it=rand(CLOTHES);
+   return{text:`${it.emoji} ___ he want ${NO_ARTICLE.has(it.en)?"":"a "}new ${it.en}? – No, he doesn't.`,opts,answer:"Does"};},
  ()=>{const preps=[["cat","🐱","box","📦","in"],["book","📖","table","🟫","on"],["bird","🐦","tree","🌳","in"]];
-   const p=rand(preps);const opts=shuffle([{en:"on"},{en:"in"},{en:"between"}]);
+   const p=rand(preps);const base=[{en:"on"},{en:"in"},{en:"between"}];
+   const opts=shuffle(isHard()?[...base,{en:"under"}]:base);
    return{text:`The ${p[0]} ${p[1]} is ___ the ${p[2]} ${p[3]}.`,opts,answer:p[4]};},
- ()=>{const room=rand(ROOMS);const thing=rand(["a bed","a sofa","a table","a lamp"]);const opts=shuffle([{en:"is"},{en:"are"},{en:"am"}]);
+ ()=>{const room=rand(ROOMS);const thing=rand(["a bed","a sofa","a table","a lamp"]);
+   const base=[{en:"is"},{en:"are"},{en:"am"}];const opts=shuffle(isHard()?[...base,{en:"be"}]:base);
    return{text:`Is there ${thing} in the ${room.en}? ${room.emoji} – Yes, there ___.`,opts,answer:"is"};},
- ()=>{const fam=rand(FAMILY);const opts=shuffle([{en:"is"},{en:"are"},{en:"am"}]);
+ ()=>{const fam=rand(FAMILY);const base=[{en:"is"},{en:"are"},{en:"am"}];
+   const opts=shuffle(isHard()?[...base,{en:"be"}]:base);
    return{text:`${fam.emoji} My ${fam.en} ___ happy today.`,opts,answer:"is"};},
 ];
+/* Mẫu ngữ pháp bổ sung cho mức Khó */
+const GRAMMAR_TEMPLATES_HARD=[
+ ()=>{const it=rand(singularOnly(TOYS));const opts=shuffle([{en:"isn't"},{en:"aren't"},{en:"doesn't"},{en:"don't"}]);
+   return{text:`${it.emoji} This ___ my ${it.en}. It's my sister's.`,opts,answer:"isn't"};},
+ ()=>{const it=rand(TOYS);const opts=shuffle([{en:"are"},{en:"is"},{en:"am"},{en:"be"}]);
+   return{text:`${it.emoji} These ___ my new ${it.en}s.`,opts,answer:"are"};},
+ ()=>{const fam=rand(FAMILY);const ab=rand(ABILITIES);const opts=shuffle([{en:"can"},{en:"can't"},{en:"cans"},{en:"is"}]);
+   return{text:`${ab.emoji} My ${fam.en} ___ ${ab.en}. ${pronounFor(fam.en)} is very good at it.`,opts,answer:"can"};},
+ ()=>{const opts=shuffle([{en:"Whose"},{en:"Where"},{en:"What"},{en:"Who"}]);const it=rand(singularOnly(TOYS));const name=rand(NAMES);
+   return{text:`${it.emoji} ___ ${it.en} is this? – It's ${name}'s.`,opts,answer:"Whose"};},
+ ()=>{const opts=shuffle([{en:"How many"},{en:"How much"},{en:"What"},{en:"Where"}]);const it=rand(TOYS);
+   return{text:`${it.emoji} ___ ${it.en}s do you have? – I have three.`,opts,answer:"How many"};},
+ ()=>{const act=rand(ACTIONS);const opts=shuffle([{en:"isn't"},{en:"doesn't"},{en:"aren't"},{en:"not"}]);
+   return{text:`${act.emoji} She ___ ${act.en} now. She is reading a book.`,opts,answer:"isn't"};},
+ ()=>{const c=rand(singularOnly(CLOTHES));const opts=shuffle([{en:"his"},{en:"he"},{en:"him"},{en:"he's"}]);
+   return{text:`${c.emoji} That is ${withArt(c.en)}${c.en}. It is ___ ${c.en}.`,opts,answer:"his"};},
+];
+/* Mẫu ngữ pháp bổ sung cho mức Rất khó — câu ghép, 2 mệnh đề */
+const GRAMMAR_TEMPLATES_VERYHARD=[
+ ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const room=rand(["kitchen","bedroom","living room"]);
+   const opts=shuffle([{en:"but"},{en:"and"},{en:"or"},{en:"so"}]);
+   return{text:`${act.emoji} My ${fam.en} is in the ${room}, ___ ${pronounFor(fam.en).toLowerCase()} is not ${act.en}.`,opts,answer:"but"};},
+ ()=>{const c1=rand(singularOnly(CLOTHES));const c2=rand(singularOnly(CLOTHES).filter(x=>x.en!==c1.en));
+   const opts=shuffle([{en:"and"},{en:"but"},{en:"because"},{en:"or"}]);
+   return{text:`${c1.emoji}${c2.emoji} He is wearing ${withArt(c1.en)}${c1.en} ___ ${withArt(c2.en)}${c2.en}.`,opts,answer:"and"};},
+ ()=>{const ab=rand(ABILITIES);const opts=shuffle([{en:"can't"},{en:"can"},{en:"don't"},{en:"isn't"}]);
+   return{text:`${ab.emoji} My brother can swim, but my sister ___. She is learning now.`,opts,answer:"can't"};},
+ ()=>{const t=rand(singularOnly(TOYS));const opts=shuffle([{en:"because"},{en:"but"},{en:"and"},{en:"or"}]);
+   return{text:`${t.emoji} I want ${NO_ARTICLE.has(t.en)?"":"a "}new ${t.en} ___ my old one is broken.`,opts,answer:"because"};},
+ ()=>{const fam=rand(FAMILY);const opts=shuffle([{en:"doesn't"},{en:"isn't"},{en:"don't"},{en:"aren't"}]);
+   const c=rand(singularOnly(CLOTHES));
+   return{text:`${c.emoji} My ${fam.en} ___ want ${NO_ARTICLE.has(c.en)?"":"a "}new ${c.en}, but I do.`,opts,answer:"doesn't"};},
+ ()=>{const opts=shuffle([{en:"There are"},{en:"There is"},{en:"They are"},{en:"It is"}]);
+   const r=rand(ROOMS);
+   return{text:`${r.emoji} ___ two beds and one table in the ${r.en}.`,opts,answer:"There are"};},
+];
+function grammarPool(){
+  if(isVeryHard()) return [...GRAMMAR_TEMPLATES,...GRAMMAR_TEMPLATES_HARD,...GRAMMAR_TEMPLATES_VERYHARD];
+  if(isHard()) return [...GRAMMAR_TEMPLATES,...GRAMMAR_TEMPLATES_HARD];
+  return GRAMMAR_TEMPLATES;
+}
 function genPart4(count){
   const out=[];const used=new Set();let tries=0;
-  while(out.length<count && tries<count*10){
-    tries++;const q=rand(GRAMMAR_TEMPLATES)();
+  const pool=grammarPool();
+  while(out.length<count && tries<count*15){
+    tries++;const q=rand(pool)();
     if(used.has(q.text))continue; used.add(q.text);
     out.push({sec:4,text:q.text,options:q.opts.map(o=>({label:o.en,val:o.en})),answer:q.answer});
   }
@@ -378,13 +535,30 @@ function genPart5(count){
         options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:stated===real?"Yes":"No"});
     } else if(kind==="wear"){
       const c=rand(CLOTHES);const color=rand(COLORS);const said=Math.random()<0.5?color:rand(COLORS.filter(x=>x!==color));
-      out.push({sec:5,text:`She is wearing ${withArtColor(said,c.en)}${said} ${c.en}.`,scene:`🧑 ${c.emoji}`,
-        options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:said===color?"Yes":"No",
-        note:`(Màu thật trong tranh: ${color})`});
+      if(isVeryHard()){
+        // câu ghép 2 ý: cả màu lẫn món đồ đều phải đúng thì mới là Yes
+        const c2=rand(CLOTHES.filter(x=>x.en!==c.en));
+        const saidItem=Math.random()<0.5?c:c2;
+        const bothRight = (said===color) && (saidItem.en===c.en);
+        out.push({sec:5,text:`She is wearing ${withArtColor(said,saidItem.en)}${said} ${saidItem.en}, and she is not wearing a hat.`,
+          scene:`🧑 ${c.emoji}`,options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],
+          answer:bothRight?"Yes":"No",note:`(Trong tranh: ${color} ${c.en}, không đội mũ)`});
+      } else {
+        out.push({sec:5,text:`She is wearing ${withArtColor(said,c.en)}${said} ${c.en}.`,scene:`🧑 ${c.emoji}`,
+          options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:said===color?"Yes":"No",
+          note:`(Màu thật trong tranh: ${color})`});
+      }
     } else {
       const act=rand(ACTIONS);const said=Math.random()<0.5?act:rand(ACTIONS.filter(x=>x.en!==act.en));
-      out.push({sec:5,text:`He is ${said.en}.`,scene:`🧒 ${act.emoji}`,
-        options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:said.en===act.en?"Yes":"No"});
+      if(isHard()){
+        // dạng phủ định: phải đảo ngược logic
+        const isSame=said.en===act.en;
+        out.push({sec:5,text:`He isn't ${said.en}.`,scene:`🧒 ${act.emoji}`,
+          options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:isSame?"No":"Yes"});
+      } else {
+        out.push({sec:5,text:`He is ${said.en}.`,scene:`🧒 ${act.emoji}`,
+          options:[{label:"Yes",val:"Yes"},{label:"No",val:"No"}],answer:said.en===act.en?"Yes":"No"});
+      }
     }
   }
   return out;
@@ -401,10 +575,15 @@ function genPassage(){
   const facts=memberDefs.map(md=>{
     const fam=FAMILY.find(f=>f.en===md.key);
     return {member:fam,pronoun:md.pronoun,action:rand(ACTIONS),room:rand(passageRooms),feeling:rand(feelings),
+      ability:rand(ABILITIES),
       color1:rand(COLORS),item1:rand(CLOTHES),color2:rand(COLORS),item2:rand(CLOTHES)};
   });
-  const lines=facts.map(f=>
-    `My ${f.member.en} is ${f.action.en} in the ${f.room}. ${f.pronoun} is wearing ${withArtColor(f.color1,f.item1.en)}${f.color1} ${f.item1.en} and ${withArtColor(f.color2,f.item2.en)}${f.color2} ${f.item2.en}. ${f.pronoun} looks ${f.feeling}.`);
+  const lines=facts.map(f=>{
+    let s=`My ${f.member.en} is ${f.action.en} in the ${f.room}. ${f.pronoun} is wearing ${withArtColor(f.color1,f.item1.en)}${f.color1} ${f.item1.en} and ${withArtColor(f.color2,f.item2.en)}${f.color2} ${f.item2.en}. ${f.pronoun} looks ${f.feeling}.`;
+    // mức khó: thêm câu về khả năng -> đoạn dài hơn và có thêm dữ kiện để hỏi
+    if(isHard()) s+=` ${f.pronoun} can ${f.ability.en} very well.`;
+    return s;
+  });
   const myC1=rand(COLORS),myI1=rand(CLOTHES),myC2=rand(COLORS),myI2=rand(CLOTHES);
   const passage=`I'm ${name}. This ${day} ${time}, my family is going to the ${place}. `
     + lines.join(" ")
@@ -413,7 +592,19 @@ function genPassage(){
   const questions=[];
   questions.push({text:`${name}'s family is going to the ${place}.`,answer:"Yes"});
   facts.forEach(f=>{
-    if(Math.random()<0.5){
+    const r=Math.random();
+    if(isVeryHard() && r<0.34){
+      // hỏi chéo: ghép 2 dữ kiện của cùng một người, cả hai đúng mới là Yes
+      const shownRoom=Math.random()<0.5?f.room:rand(passageRooms.filter(x=>x!==f.room));
+      const shownAction=Math.random()<0.5?f.action:rand(ACTIONS.filter(a=>a.en!==f.action.en));
+      const both=(shownRoom===f.room)&&(shownAction.en===f.action.en);
+      questions.push({text:`My ${f.member.en} is ${shownAction.en} in the ${shownRoom}.`,answer:both?"Yes":"No"});
+    } else if(isHard() && r<0.55){
+      // câu phủ định về khả năng
+      const shownAb=Math.random()<0.5?f.ability:rand(ABILITIES.filter(a=>a.en!==f.ability.en));
+      const same=shownAb.en===f.ability.en;
+      questions.push({text:`My ${f.member.en} can't ${shownAb.en}.`,answer:same?"No":"Yes"});
+    } else if(r<0.78){
       const shownAction=Math.random()<0.5?f.action:rand(ACTIONS.filter(a=>a.en!==f.action.en));
       questions.push({text:`My ${f.member.en} is ${shownAction.en}.`,answer:shownAction.en===f.action.en?"Yes":"No"});
     } else {
@@ -448,9 +639,37 @@ function genPart7(count){
     ()=>{const items=pick(TOYS,2);return{prompt:`What are those? ${items[0].emoji}${items[1].emoji}`,
       answer:`Those are ${items[0].en}s and ${items[1].en}s.`};},
   ];
+  // Mức khó: câu trả lời dài hơn, có 2 ý (màu + món đồ, hành động + nơi chốn)
+  const templatesHard=[
+    ()=>{const c=rand(CLOTHES);const color=rand(COLORS);const who=rand(["he","she"]);
+      return{prompt:`What is ${who} wearing? ${c.emoji}`,
+        answer:`${who==="he"?"He's":"She's"} wearing ${withArtColor(color,c.en)}${color} ${c.en}.`};},
+    ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const room=rand(["kitchen","bedroom","living room"]);
+      return{prompt:`What is your ${fam.en} doing? ${act.emoji}`,
+        answer:`${pronounFor(fam.en)} is ${act.en} in the ${room}.`};},
+    ()=>{const ab=rand(ABILITIES);const who=rand(["he","she"]);
+      return{prompt:`What can ${who} do? ${ab.emoji}`,
+        answer:`${who==="he"?"He":"She"} can ${ab.en}.`};},
+  ];
+  const templatesVeryHard=[
+    ()=>{const c1=rand(singularOnly(CLOTHES));const c2=rand(singularOnly(CLOTHES).filter(x=>x.en!==c1.en));
+      const col1=rand(COLORS),col2=rand(COLORS);
+      return{prompt:`What is she wearing? ${c1.emoji}${c2.emoji}`,
+        answer:`She's wearing ${withArtColor(col1,c1.en)}${col1} ${c1.en} and ${withArtColor(col2,c2.en)}${col2} ${c2.en}.`};},
+    ()=>{const fam=rand(FAMILY);const ab=rand(ABILITIES);const ab2=rand(ABILITIES.filter(a=>a.en!==ab.en));
+      return{prompt:`What can your ${fam.en} do? ${ab.emoji}${ab2.emoji}`,
+        answer:`${pronounFor(fam.en)} can ${ab.en} and ${ab2.en}.`};},
+    ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const room=rand(["kitchen","bedroom","living room"]);
+      const col=rand(COLORS);const c=rand(CLOTHES);
+      return{prompt:`What is your ${fam.en} doing, and what is ${pronounFor(fam.en).toLowerCase()} wearing? ${act.emoji}${c.emoji}`,
+        answer:`${pronounFor(fam.en)} is ${act.en} in the ${room}, and ${pronounFor(fam.en).toLowerCase()} is wearing ${withArtColor(col,c.en)}${col} ${c.en}.`};},
+  ];
+  let pool=templates;
+  if(isVeryHard()) pool=[...templatesHard,...templatesVeryHard];
+  else if(isHard()) pool=[...templates,...templatesHard];
   const out=[];
   for(let i=0;i<count;i++){
-    const t=rand(templates)();
+    const t=rand(pool)();
     out.push({sec:7,text:t.prompt,answer:t.answer});
   }
   return out;
@@ -476,7 +695,16 @@ function genPart8Set(){
   const q3Answer=`I am ${action.en}.`;
 
   const bank=shuffle([q1Answer,q2Answer,q3Answer,distractor]);
-  return {bank, questions:[
+  // mức khó: thêm 1-2 câu nhiễu nữa trong bảng từ -> khó loại trừ hơn
+  if(isHard()){
+    const d2Item=rand(singularOnly(VOCAB_POOL).filter(t=>t.en!==item.en&&t.en!==distractorItem.en));
+    bank.push(`That's ${withArt(d2Item.en)}${d2Item.en}.`);
+  }
+  if(isVeryHard()){
+    const d3=rand(ABILITIES.filter(a=>a.en!==ability.en));
+    bank.push(`${pronoun==="She"?"He":"She"} can ${d3.en}.`);
+  }
+  return {bank:shuffle(bank), questions:[
     {prompt:"What's that?",emoji:item.emoji,answer:q1Answer},
     {prompt:`What can ${personName} do?`,emoji:ability.emoji,answer:q2Answer},
     {prompt:"What are you doing?",emoji:action.emoji,answer:q3Answer},
@@ -510,7 +738,29 @@ function genScrambleSentence(){
     ()=>{const who=rand(["He","She"]);const ability=rand(ABILITIES);
       return `${who} can ${ability.en}.`;},
   ];
-  return rand(templates)();
+  // Mức khó: câu dài hơn, có 2 mệnh đề nối bằng and/but/because
+  const templatesHard=[
+    ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const room=rand(["kitchen","bedroom","living room"]);const feel=rand(["happy","tired","hungry"]);
+      return `My ${fam.en} is ${act.en} in the ${room} and ${pronounFor(fam.en).toLowerCase()} looks ${feel}.`;},
+    ()=>{const ab=rand(ABILITIES);const ab2=rand(ABILITIES.filter(a=>a.en!==ab.en));const who=rand(["He","She"]);
+      return `${who} can ${ab.en} but ${who.toLowerCase()} can't ${ab2.en}.`;},
+    ()=>{const toy=rand(singularOnly(TOYS));const color=rand(COLORS);
+      return `I want ${withArtColor(color,toy.en)}${color} ${toy.en} because my old one is broken.`;},
+  ];
+  const templatesVeryHard=[
+    ()=>{const name=rand(NAMES);const fam=rand(FAMILY);const c1=rand(CLOTHES);const col1=rand(COLORS);
+      const place=rand(["school","work"]);const day=rand(["Monday","Sunday"]);
+      return `${name}'s ${fam.en} wears ${withArtColor(col1,c1.en)}${col1} ${c1.en} to ${place} but not on ${day}.`;},
+    ()=>{const fam=rand(FAMILY);const act=rand(ACTIONS);const ab=rand(ABILITIES);
+      return `My ${fam.en} is ${act.en} now because ${pronounFor(fam.en).toLowerCase()} can ${ab.en} very well.`;},
+    ()=>{const c1=rand(singularOnly(CLOTHES));const c2=rand(singularOnly(CLOTHES).filter(x=>x.en!==c1.en));
+      const col1=rand(COLORS);const col2=rand(COLORS);const who=rand(["He","She"]);
+      return `${who} is wearing ${withArtColor(col1,c1.en)}${col1} ${c1.en} and ${withArtColor(col2,c2.en)}${col2} ${c2.en} today.`;},
+  ];
+  let pool=templates;
+  if(isVeryHard()) pool=[...templatesHard,...templatesVeryHard];
+  else if(isHard()) pool=[...templates,...templatesHard];
+  return rand(pool)();
 }
 function genPart9(count){
   const out=[];
@@ -652,6 +902,7 @@ async function submitQuiz(){
     <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
       <button class="big-btn purple" onclick="generateAll(null)">🧩 Tạo đề tổng hợp mới ngay</button>
       <button class="big-btn ghost" onclick="scrollToSetup()">⚙️ Chọn lại từng phần</button>
+      <button class="big-btn ghost" onclick="printWorksheet()">🖨️ Xuất đề này ra PDF</button>
     </div>
   </div>`;
   res.scrollIntoView({behavior:"smooth"});
@@ -669,6 +920,178 @@ async function refreshBadges(){
 function scrollToSetup(){
   document.querySelector('.section-block').scrollIntoView({behavior:"smooth"});
 }
+
+/* ================= PRINT / PDF WORKSHEET ================= */
+const PRINT_SEC_HEAD={
+  1:{group:"I. PHONICS",instr:"1. Look and read. CIRCLE the correct picture that matches the sound."},
+  2:{group:"I. PHONICS",instr:"2. Look. CIRCLE the picture that DOES NOT rhyme."},
+  3:{group:"II. VOCABULARY AND GRAMMAR",instr:"3. Look. CIRCLE the correct picture."},
+  4:{group:"II. VOCABULARY AND GRAMMAR",instr:"4. Look. CIRCLE the correct answer."},
+  5:{group:"III. READING",instr:"5. Look and read. CIRCLE the correct answer."},
+  6:{group:"III. READING",instr:"6. Read. CIRCLE the correct answer."},
+  7:{group:"IV. WRITING",instr:"7. Read and WRITE the answer."},
+  8:{group:"IV. WRITING",instr:"8. Look, read and choose the correct answer. WRITE."},
+  9:{group:"IV. WRITING",instr:"9. Put the words in the correct order to make sentences."},
+};
+const LETTERS=["A","B","C","D"];
+
+function stripTags(s){return String(s).replace(/<[^>]*>/g,"");}
+
+function buildPrintable(){
+  if(!quiz.length){ alert("Chưa có đề nào. Hãy bấm \"Tạo đề tổng hợp\" hoặc \"Luyện riêng phần này\" trước, rồi mới xuất PDF nhé!"); return false; }
+  const name=document.getElementById('studentName').value||"";
+  const today=new Date();
+  const groups={};
+  quiz.forEach(q=>{(groups[q.sec]=groups[q.sec]||[]).push(q);});
+
+  let html=`<div class="pw-header">
+    <div class="left">
+      <div class="pw-title">ENGLISH PRACTICE</div>
+      Full name: ${name?name:"…………………………………"}<br>
+      Class: …………………………………
+    </div>
+    <div class="right">
+      PRACTICE TEST<br>
+      Mức độ: ${LEVEL==="medium"?"Trung bình":LEVEL==="hard"?"Khó":"Rất khó"}<br>
+      Date: ……… / ……… / ${today.getFullYear()}<br>
+      Score: ……… / ${quiz.length}
+    </div>
+  </div>`;
+
+  let lastGroup=null, num=0;
+  const key=[];
+  [1,2,3,4,5,6,7,8,9].forEach(sec=>{
+    if(!groups[sec])return;
+    const head=PRINT_SEC_HEAD[sec];
+    if(head.group!==lastGroup){ html+=`<div class="pw-sec">${head.group}</div>`; lastGroup=head.group; }
+    html+=`<div class="pw-instr">${head.instr}</div>`;
+
+    groups[sec].forEach(q=>{
+      num++;
+      if(sec===6 && q.passageText) html+=`<div class="pw-passage">${q.passageText}</div>`;
+      if(sec===8 && q.bank){
+        html+=`<div class="pw-bank">${q.bank.map(b=>`<span>${b}</span>`).join("")}</div>`;
+      }
+
+      if(sec===9){
+        html+=`<div class="pw-q"><span class="num">${num}.</span> ${q.scrambleDisplay}
+          <div class="pw-answer-line">&#8658; <span class="pw-line" style="min-width:80%"></span></div></div>`;
+        key.push(`${num}. ${q.answer}`);
+        return;
+      }
+      if(sec===7||sec===8){
+        html+=`<div class="pw-q"><span class="num">${num}.</span> ${stripTags(q.text)}
+          ${q.scene?`<div class="pw-scene">${q.scene}</div>`:""}
+          <div class="pw-answer-line">Answer: <span class="pw-line" style="min-width:72%"></span></div></div>`;
+        key.push(`${num}. ${q.answer}`);
+        return;
+      }
+
+      // multiple-choice sections
+      html+=`<div class="pw-q"><span class="num">${num}.</span> ${stripTags(q.text)}
+        ${q.scene?`<div class="pw-scene">${q.scene}</div>`:""}
+        <div class="pw-opts">`;
+      let correctLetter="?";
+      q.options.forEach((o,i)=>{
+        const isEmoji=q.emojiOpts;
+        if(o.val===q.answer) correctLetter=LETTERS[i];
+        html+=`<span class="o">${LETTERS[i]}. <span class="${isEmoji?'pw-emoji':''}">${o.label}</span></span>`;
+      });
+      html+=`</div></div>`;
+      key.push(`${num}. ${correctLetter}`);
+    });
+  });
+
+  html+=`<div class="pw-foot">--- THE END ---</div>`;
+
+  if(document.getElementById('includeKey').checked){
+    html+=`<div class="pw-pagebreak"></div>
+      <div class="pw-sec">ĐÁP ÁN (dành cho phụ huynh)</div>
+      <div class="pw-key">`;
+    const cols=key.map(k=>k).join(" &nbsp;|&nbsp; ");
+    html+=cols+`</div>`;
+  }
+
+  const toolbar=`<div class="pw-toolbar">
+    <div class="hint">👇 Đây là bản xem trước đề in. Nếu bấm "In / Lưu PDF" mà không thấy gì (do trình duyệt chặn), hãy dùng nút <b>"Tải file về máy"</b> rồi mở file đó và nhấn <b>Ctrl + P</b> để lưu PDF.</div>
+    <button class="big-btn" style="background:var(--sky);box-shadow:none;" onclick="doPrint()">🖨️ In / Lưu PDF</button>
+    <button class="big-btn" style="background:var(--leaf);box-shadow:none;" onclick="downloadWorksheet()">⬇️ Tải file về máy (chắc chắn được)</button>
+    <button class="big-btn ghost" onclick="closePreview()">✖ Đóng xem trước</button>
+  </div>`;
+  document.getElementById('printArea').innerHTML=toolbar+html;
+  window.__worksheetHTML=html;
+  return true;
+}
+function closePreview(){
+  document.getElementById('printArea').classList.remove('show');
+}
+function inIframe(){
+  try{ return window.self!==window.top; }catch(e){ return true; }
+}
+function doPrint(){
+  // Trong iframe/khung xem trước, window.print() bị chặn im lặng (không báo lỗi),
+  // nên đi thẳng sang mở tab mới -> nếu chặn nữa thì tự tải file về.
+  if(inIframe()){ openWorksheetWindow(); return; }
+  try{
+    window.print();
+  }catch(e){
+    openWorksheetWindow();
+  }
+}
+function worksheetDocument(){
+  const styles=[...document.querySelectorAll('style')].map(s=>s.innerHTML).join("\n");
+  return `<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8">
+<title>De luyen tap Tieng Anh</title><style>${styles}
+body{background:#fff;color:#000;font-family:'Nunito',system-ui,sans-serif;margin:0;padding:14mm;}
+#printArea{display:block !important;}
+@media print{@page{size:A4;margin:13mm 14mm;} body{padding:0;}}
+</style></head><body><div id="printArea">${window.__worksheetHTML||""}</div></body></html>`;
+}
+function openWorksheetWindow(){
+  let win=null;
+  try{ win=window.open("","_blank"); }catch(e){ win=null; }
+  if(!win){
+    // Tab mới cũng bị chặn -> tự động tải file về máy kèm hướng dẫn
+    downloadWorksheet();
+    showPrintNotice("Trình duyệt đang chặn cửa sổ in. Đề đã được <b>tải về máy</b> (file <b>de-luyen-tap-tieng-anh.html</b>) — anh/chị mở file đó lên rồi nhấn <b>Ctrl + P</b> (máy Mac: <b>Cmd + P</b>) và chọn <b>\"Save as PDF\"</b> để lưu hoặc in.");
+    return;
+  }
+  win.document.write(worksheetDocument());
+  win.document.close();
+  setTimeout(()=>{try{win.focus();win.print();}catch(e){}},500);
+}
+function showPrintNotice(msgHtml){
+  let box=document.getElementById('printNotice');
+  if(!box){
+    box=document.createElement('div');
+    box.id='printNotice';
+    box.style.cssText="background:#FFF4D6;border:2px solid var(--sun);border-radius:14px;padding:13px 15px;margin-bottom:14px;font-size:13px;font-weight:700;line-height:1.6;color:#6b5a17;";
+    const tb=document.querySelector('.pw-toolbar');
+    tb.parentNode.insertBefore(box,tb.nextSibling);
+  }
+  box.innerHTML="ℹ️ "+msgHtml;
+}
+function downloadWorksheet(){
+  try{
+    const blob=new Blob([worksheetDocument()],{type:"text/html;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download="de-luyen-tap-tieng-anh.html";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),2000);
+    showPrintNotice("Đã tải đề về máy: file <b>de-luyen-tap-tieng-anh.html</b> (thường nằm trong thư mục <b>Downloads / Tải xuống</b>). Mở file đó lên → nhấn <b>Ctrl + P</b> (Mac: <b>Cmd + P</b>) → chọn <b>\"Save as PDF\"</b> để lưu, hoặc chọn máy in để in ra giấy.");
+  }catch(e){
+    showPrintNotice("Không tải được file trên khung xem trước này. Anh/chị hãy mở app bằng đường link GitHub Pages (hoặc mở file index.html trực tiếp bằng trình duyệt) rồi thử lại — khi đó chức năng in hoạt động bình thường.");
+  }
+}
+function printWorksheet(){
+  if(!buildPrintable()) return;
+  const pa=document.getElementById('printArea');
+  pa.classList.add('show');
+  pa.scrollIntoView({behavior:"smooth"});
+}
+document.getElementById('printBtn').addEventListener('click',printWorksheet);
+document.getElementById('levelDesc').innerHTML=LEVEL_INFO[LEVEL];
 document.getElementById('mixBtn').addEventListener('click',()=>generateAll(null));
 refreshBadges();
 </script>
